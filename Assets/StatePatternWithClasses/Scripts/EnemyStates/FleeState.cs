@@ -1,0 +1,32 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace StatePatternWithClasses
+{
+	public class FleeState : State {
+
+		public FleeState(float health, Enemy enemy) {
+			this.health = health;
+			this.enemy = enemy;
+		}
+
+		public override void UpdateEnemy(Transform PlayerObj) {
+			float distance = (enemy.enemyObj.position - PlayerObj.position).magnitude;
+			checkState (health, distance);
+		}
+
+		public override void doAction(Transform PlayerObj) {
+			enemy.enemyObj.rotation = Quaternion.LookRotation(enemy.enemyObj.position - PlayerObj.position);
+			enemy.enemyObj.Translate(enemy.enemyObj.forward * 10.0f * Time.deltaTime);
+		}
+
+		private void checkState(float health, float distance)
+		{
+			if (health > 60f)
+			{
+				enemy.State = new AttackState(this.health, this.enemy);
+			}
+		}
+	}
+}
